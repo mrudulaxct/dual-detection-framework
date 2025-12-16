@@ -26,6 +26,43 @@ def check_module(module_name):
         print(f"❌ Module {module_name} NOT installed")
         return False
 
+def test_backend():
+    """Test if backend can run simulation"""
+    print("\n🧪 Testing Backend Simulation...")
+    try:
+        sys.path.append(str(Path(__file__).parent / 'src'))
+        from src.plant import Plant
+        from src.controller import Controller
+        from src.detectors import FaultDetector, AttackDetector
+        from src.network import SecureNetwork
+        from src.database import Database
+        from src.simulator import SystemSimulator
+        
+        # Initialize
+        db = Database()
+        plant = Plant()
+        controller = Controller(plant)
+        fault_detector = FaultDetector(controller)
+        attack_detector = AttackDetector(controller, plant)
+        network = SecureNetwork()
+        simulator = SystemSimulator(plant, controller, fault_detector, attack_detector, network, db)
+        
+        print("   ✅ All components initialized")
+        
+        # Run 3 steps
+        for i in range(3):
+            results = simulator.step()
+            print(f"   Step {i+1}: Time={results['time']:.2f}, Output={results['output']:.3f}")
+        
+        print("   ✅ Simulation running successfully!")
+        return True
+        
+    except Exception as e:
+        print(f"   ❌ Simulation failed: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
 def main():
     print("=" * 80)
     print("🔍 DUAL DETECTION FRAMEWORK - SETUP VERIFICATION")
@@ -100,11 +137,11 @@ def main():
             all_good = False
     print()
     
-    # Check file sizes (to ensure they're not empty)
+    # Check file sizes
     print("📏 File Size Check:")
     critical_files = [
-        (base_path / 'static' / 'style.css', 'CSS file', 10000),  # Should be at least 10KB
-        (base_path / 'static' / 'app.js', 'JavaScript file', 5000),  # Should be at least 5KB
+        (base_path / 'static' / 'style.css', 'CSS file', 10000),
+        (base_path / 'static' / 'app.js', 'JavaScript file', 5000),
     ]
     
     for filepath, description, min_size in critical_files:
@@ -114,24 +151,30 @@ def main():
                 print(f"✅ {description}: {size} bytes")
             else:
                 print(f"⚠️  {description}: {size} bytes (expected at least {min_size})")
-                print(f"   File might be incomplete or corrupted")
                 all_good = False
-        else:
-            print(f"❌ {description} not found")
-            all_good = False
     print()
+    
+    # Test backend simulation
+    if all_good:
+        backend_ok = test_backend()
+        if not backend_ok:
+            all_good = False
     
     # Final verdict
     print("=" * 80)
     if all_good:
-        print("✅ ALL CHECKS PASSED!")
+        print("✅ ALL CHECKS PASSED! BACKEND WORKS!")
         print("\n🚀 You can now run: python main.py")
         print("📊 Dashboard will be at: http://localhost:8080")
+        print("\n💡 If dashboard still shows zeros:")
+        print("   1. Check browser console (F12)")
+        print("   2. Look for '✅ WebSocket Connected'")
+        print("   3. Should see '📊 Updating dashboard' messages")
     else:
-        print("❌ SETUP INCOMPLETE!")
+        print("❌ SETUP HAS ISSUES!")
         print("\n📝 Fix the issues above, then:")
-        print("   1. Make sure all files are created")
-        print("   2. Install missing packages: pip install numpy scipy aiohttp aiohttp-cors cryptography")
+        print("   1. Install missing packages: pip install numpy scipy aiohttp aiohttp-cors cryptography")
+        print("   2. Make sure all files are created")
         print("   3. Run this test again: python test_setup.py")
     print("=" * 80)
     
@@ -139,3 +182,4 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
+    

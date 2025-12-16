@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dual Detection Framework - CPS Security Monitor</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+    <div class="animated-bg">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <div class="dashboard">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo-container">
+                    <div class="logo-icon">🛡️</div>
+                    <div>
+                        <h1>DUAL DETECTION FRAMEWORK</h1>
+                        <p class="subtitle">Cyber-Physical System Security Monitoring</p>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="status-badge system-badge" id="systemStatus">
+                    <div class="badge-icon">⚡</div>
+                    <div class="badge-content">
+                        <span class="badge-label">SYSTEM STATUS</span>
+                        <span class="badge-value">NORMAL</span>
+                    </div>
+                </div>
+                <div class="status-badge encryption-badge" id="encryptionStatus">
+                    <div class="badge-icon">🔒</div>
+                    <div class="badge-content">
+                        <span class="badge-label">ENCRYPTION</span>
+                        <span class="badge-value">ACTIVE</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Panel: System State -->
+            <div class="glass-panel">
+                <div class="panel-header">
+                    <div class="panel-icon">📊</div>
+                    <h2>SYSTEM STATE</h2>
+                </div>
+                <div class="panel-content">
+                    <div class="state-grid">
+                        <div class="state-card">
+                            <div class="state-icon">📡</div>
+                            <div class="state-info">
+                                <label>Output Signal</label>
+                                <div class="state-value" id="outputValue">0.00</div>
+                            </div>
+                        </div>
+                        <div class="state-card">
+                            <div class="state-icon">🎯</div>
+                            <div class="state-info">
+                                <label>Reference</label>
+                                <div class="state-value" id="referenceValue">0.00</div>
+                            </div>
+                        </div>
+                        <div class="state-card">
+                            <div class="state-icon">⚙️</div>
+                            <div class="state-info">
+                                <label>Control u₁</label>
+                                <div class="state-value" id="control1Value">0.00</div>
+                            </div>
+                        </div>
+                        <div class="state-card">
+                            <div class="state-icon">⚙️</div>
+                            <div class="state-info">
+                                <label>Control u₂</label>
+                                <div class="state-value" id="control2Value">0.00</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-wrapper">
+                        <canvas id="systemChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Panel: Detectors -->
+            <div class="glass-panel">
+                <div class="panel-header">
+                    <div class="panel-icon">🔍</div>
+                    <h2>DETECTION SYSTEM</h2>
+                </div>
+                <div class="panel-content">
+                    <!-- Fault Detector -->
+                    <div class="detector-card detector-1">
+                        <div class="detector-header">
+                            <div class="detector-badge">D1</div>
+                            <div>
+                                <h3>FAULT DETECTION</h3>
+                                <p class="detector-desc">Controller-Side χ² Detector</p>
+                            </div>
+                        </div>
+                        <div class="detector-status-bar" id="faultDetectorStatus">
+                            <div class="status-pulse"></div>
+                            <span class="status-text">NORMAL OPERATION</span>
+                        </div>
+                        <div class="metrics-row">
+                            <div class="metric-box">
+                                <label>Test Statistic</label>
+                                <div class="metric-display">
+                                    <span class="metric-value" id="faultStatistic">0.00</span>
+                                    <span class="metric-unit">J</span>
+                                </div>
+                            </div>
+                            <div class="metric-box">
+                                <label>Threshold</label>
+                                <div class="metric-display">
+                                    <span class="metric-value" id="faultThreshold">6.63</span>
+                                    <span class="metric-unit">J_th</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper-small">
+                            <canvas id="faultChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Attack Detector -->
+                    <div class="detector-card detector-2">
+                        <div class="detector-header">
+                            <div class="detector-badge">D2</div>
+                            <div>
+                                <h3>ATTACK DETECTION</h3>
+                                <p class="detector-desc">Plant-Side Kernel Attack Detector</p>
+                            </div>
+                        </div>
+                        <div class="detector-status-bar" id="attackDetectorStatus">
+                            <div class="status-pulse"></div>
+                            <span class="status-text">NORMAL OPERATION</span>
+                        </div>
+                        <div class="metrics-row">
+                            <div class="metric-box">
+                                <label>Test Statistic</label>
+                                <div class="metric-display">
+                                    <span class="metric-value" id="attackStatistic">0.00</span>
+                                    <span class="metric-unit">J_u</span>
+                                </div>
+                            </div>
+                            <div class="metric-box">
+                                <label>Threshold</label>
+                                <div class="metric-display">
+                                    <span class="metric-value" id="attackThreshold">9.21</span>
+                                    <span class="metric-unit">J_th,u</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper-small">
+                            <canvas id="attackChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Anomaly Classification -->
+                    <div class="anomaly-card">
+                        <div class="anomaly-header">
+                            <div class="anomaly-icon">🎯</div>
+                            <h3>CLASSIFICATION RESULT</h3>
+                        </div>
+                        <div class="anomaly-display" id="anomalyResult">
+                            <div class="anomaly-type-badge">NORMAL</div>
+                            <div class="anomaly-description" id="anomalyDescription">
+                                System operating normally. No faults or attacks detected.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Control -->
+            <div class="glass-panel">
+                <div class="panel-header">
+                    <div class="panel-icon">⚙️</div>
+                    <h2>CONTROL CENTER</h2>
+                </div>
+                <div class="panel-content">
+                    <!-- Reference Control -->
+                    <div class="control-box">
+                        <div class="control-header">
+                            <span class="control-icon">🎯</span>
+                            <h3>Reference Input</h3>
+                        </div>
+                        <div class="control-body">
+                            <div class="slider-container">
+                                <input type="range" id="referenceSlider" class="custom-slider" min="-2" max="2" step="0.1" value="0">
+                                <div class="slider-value" id="referenceLabel">0.0</div>
+                            </div>
+                            <button class="control-btn btn-primary" onclick="setReference()">
+                                <span>SET REFERENCE</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Fault Injection -->
+                    <div class="control-box">
+                        <div class="control-header">
+                            <span class="control-icon">⚠️</span>
+                            <h3>Fault Injection</h3>
+                        </div>
+                        <div class="control-body">
+                            <select id="faultType" class="custom-select">
+                                <option value="plant">🔧 Plant Fault</option>
+                                <option value="sensor">📡 Sensor Fault</option>
+                                <option value="actuator">⚙️ Actuator Fault</option>
+                            </select>
+                            <div class="slider-container">
+                                <label>Magnitude</label>
+                                <input type="range" id="faultMagnitude" class="custom-slider" min="0" max="2" step="0.1" value="0.5">
+                                <div class="slider-value" id="faultMagLabel">0.5</div>
+                            </div>
+                            <button class="control-btn btn-danger" onclick="injectFault()">
+                                <span>INJECT FAULT</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Attack Injection -->
+                    <div class="control-box">
+                        <div class="control-header">
+                            <span class="control-icon">🎭</span>
+                            <h3>Attack Injection</h3>
+                        </div>
+                        <div class="control-body">
+                            <select id="attackType" class="custom-select">
+                                <option value="covert">🕵️ Covert Attack</option>
+                                <option value="zero_dynamics">🎯 Zero-Dynamics Attack</option>
+                                <option value="replay">🔄 Replay Attack</option>
+                            </select>
+                            <div class="slider-container">
+                                <label>Magnitude</label>
+                                <input type="range" id="attackMagnitude" class="custom-slider" min="0" max="2" step="0.1" value="0.5">
+                                <div class="slider-value" id="attackMagLabel">0.5</div>
+                            </div>
+                            <button class="control-btn btn-warning" onclick="injectAttack()">
+                                <span>INJECT ATTACK</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Clear Button -->
+                    <button class="control-btn btn-success full-width" onclick="clearAnomalies()">
+                        <span>🔄 CLEAR ALL ANOMALIES</span>
+                    </button>
+
+                    <!-- Network Statistics -->
+                    <div class="control-box network-box">
+                        <div class="control-header">
+                            <span class="control-icon">📡</span>
+                            <h3>Network Statistics</h3>
+                        </div>
+                        <div class="network-stats">
+                            <div class="stat-row">
+                                <span class="stat-label">Packets Sent</span>
+                                <span class="stat-value" id="packetsSent">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Encrypted</span>
+                                <span class="stat-value" id="packetsEncrypted">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Attacked</span>
+                                <span class="stat-value" id="packetsAttacked">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-title">Dual Detection Framework for Cyber-Physical Systems</p>
+                <div class="footer-badges">
+                    <span class="footer-badge">🔒 Encrypted Communication</span>
+                    <span class="footer-badge">🛡️ Real-time Monitoring</span>
+                    <span class="footer-badge">🎯 Anomaly Classification</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
